@@ -3,9 +3,6 @@ import yfinance as yf  #retrive all of stock data
 import pandas as pd    #employee data frame
 import cufflinks as cf #to create charts
 import datetime        #to select datetime
-import matplotlib.pyplot as plt
-
-plt.style.use('fivethirtyeight')
 
 # st.markdown('''
 # # Stock Information
