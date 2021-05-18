@@ -3,8 +3,9 @@ import yfinance as yf  #retrive all of stock data
 import pandas as pd    #employee data frame
 import cufflinks as cf #to create charts
 import datetime        #to select datetime
+import matplotlib.pyplot as plt
 
-#plt.style.use('fivethirtyeight')
+plt.style.use('fivethirtyeight')
 
 # st.markdown('''
 # # Stock Information
@@ -17,7 +18,7 @@ start_date=st.sidebar.date_input("Start date",datetime.date(2020,1,1))
 end_date=st.sidebar.date_input("End date",datetime.date.today())
 
 #Retriveing ticker data
-ticker_list=['CBRE','AAPL','GOOG','FB','MSFT','AMZN']
+ticker_list=['CBRE','AAPL','GOOG','FB','MSFT','AMZN','PLTR','U']
 tickerSymbol=st.sidebar.selectbox('Stock Ticker',ticker_list)  #Select ticker
 tickerData=yf.Ticker(tickerSymbol) #Get ticker data
 tickerDf=tickerData.history(period='1d',start=start_date,end=end_date)
@@ -61,8 +62,13 @@ if task=='Chart':
     fig2=qf.iplot(asFigure=True)
     st.plotly_chart(fig2)
 
+    # fig3=plt.plot(tickerDf['Close'],label='Close Price')
+    # st.plotly_chart(fig3)
 
-#st.write(tickerData.info)
+    ShortEMA=tickerDf['Close'].ewm(span=12).mean()
+    longEMA=tickerDf['Close'].ewm(span=26).mean()
+    tickerDf['MACD']=ShortEMA-longEMA
 
-#cd C:\Users\leo.zhu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\Scripts
-#.\streamlit run "c:/Users/leo.zhu/OneDrive - CBRE, Inc/MyDocument/Python/Stock/StockWebApp.py"
+    chart_data=tickerDf['MACD']
+    #st.line_chart(chart_data)
+    st.area_chart(chart_data)
